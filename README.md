@@ -21,7 +21,10 @@ python3 scripts/init_workspace.py --demo      # synthetic portfolio, builds data
 Ready-made parsers for Revolut, Portu, Indigo/Patria, Raiffeisenbank, Investown and Golden Gate, plus typed templates for Zonky, ČSOB Investice, Air Bank and others: [parsers/README.md](parsers/README.md). Details: [docs/getting-started.md](docs/getting-started.md), [docs/index-spec.md](docs/index-spec.md), [docs/scheduling.md](docs/scheduling.md), [docs/architecture.md](docs/architecture.md).
 
 ## Privacy
-All personal data is git-ignored (`data/`, `reports/`, `local/`, `config/*.yaml`, `CLAUDE.local.md`). Only code, skills and docs are tracked. Your agent and web searches see what they need to do the work; nothing else is uploaded by this repository.
+All personal data is git-ignored (`data/`, `reports/`, `local/`, `config/*.yaml`, `CLAUDE.local.md`, `history/`, `knowledge/`, `memory/`). Only code, skills and docs are tracked. Your agent and web searches see what they need to do the work; nothing else is uploaded by this repository.
+
+## Working memory (local only)
+`RULES.md` adds: prompt history (`history/`, via hook), researched knowledge (`knowledge/`, `KNOWLEDGE.md`), memory and handovers (`memory/`), and a scripts registry (`SCRIPTS.md`). The first three are git-ignored and created by `scripts/init_workspace.py`; `scripts/check-rules.sh` verifies the setup.
 
 ## Layout
 `scripts/` deterministic Python - `parsers/` ready-made platform parsers - `.claude/skills/`, `.claude/agents/` agent knowledge - `prompts/` scheduled-run prompts - `templates/` parser template - `examples/` demo data - `docs/`.

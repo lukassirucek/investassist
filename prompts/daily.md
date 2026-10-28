@@ -1,3 +1,4 @@
 Daily Investassist run. Follow the `daily-scan` skill (.claude/skills/daily-scan/SKILL.md) in this repository, from the project root. Nobody is watching: do not ask questions, take the most reasonable reading and say which at the top of the reply.
 Steps: refresh indexes, FX, exposure; read new mail with `ingest-email` (read-only; skip if no mail connector); search news for the watchlist queries; verify every candidate by opening the article; log signals; run `holding-outlook` for the top holdings; build the digest and dashboard (`scripts/pipeline.py`); publish or save the dashboard; route alerts with `alert-triage`.
 Reply in at most 10 lines: alerts, urgent mail, non-neutral outlook leans, dated catalysts within 7 days, stale-data warnings, dashboard link or path. No trade orders. Cite URL + date for every claim.
+Last step: `python3 scripts/prompt-log.py summarize --who user --summary "daily run: <max 2 lines>" --model "<your exact model id>"` (RULES.md C3).

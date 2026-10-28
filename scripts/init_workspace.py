@@ -3,13 +3,14 @@
 
 Usage: python3 scripts/init_workspace.py            # folders + config/*.yaml from the examples + data/reference/instruments.csv
        python3 scripts/init_workspace.py --demo     # also loads synthetic demo data and builds the demo dashboard (refuses if data/index already has files)
-Everything it creates is git-ignored (see .gitignore): config/*.yaml, data/, reports/, local/, CLAUDE.local.md.
+Also scaffolds the local working memory (RULES.md B, C, E): KNOWLEDGE.md, memory/*/MEMORY.md, history/, knowledge/.
+Everything it creates is git-ignored (see .gitignore): config/*.yaml, data/, reports/, local/, CLAUDE.local.md, history/, knowledge/, memory/, KNOWLEDGE.md.
 """
 import glob, os, shutil, subprocess, sys
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 os.chdir(ROOT)
-DIRS = ['data/inbox', 'data/raw', 'data/index', 'data/exposure', 'data/signals/raw', 'data/outlook/raw', 'data/ledger', 'data/fx', 'data/reference', 'data/reports', 'reports/alerts', 'local/parsers']
+DIRS = ['data/inbox', 'data/raw', 'data/index', 'data/exposure', 'data/signals/raw', 'data/outlook/raw', 'data/ledger', 'data/fx', 'data/reference', 'data/reports', 'reports/alerts', 'local/parsers', 'local/scripts', 'history', 'knowledge', 'memory/claude', 'memory/codex', 'memory/shared', 'memory/handovers']
 
 
 def run(*cmd):
@@ -29,6 +30,12 @@ if not os.path.exists('data/reference/instruments.csv'):
     shutil.copy('examples/reference/instruments.example.csv', 'data/reference/instruments.csv'); made.append('data/reference/instruments.csv')
 if not os.path.exists('CLAUDE.local.md'):
     open('CLAUDE.local.md', 'w', encoding='utf-8').write('# Personal rules (git-ignored)\nWritten by the `setup` skill: owner, tax wrappers, exclusions, language, anything the agent must always respect for this user.\n'); made.append('CLAUDE.local.md')
+for src, dst in (('templates/workspace/KNOWLEDGE.md', 'KNOWLEDGE.md'), ('templates/workspace/MEMORY.md', 'memory/claude/MEMORY.md'),
+                 ('templates/workspace/MEMORY.md', 'memory/codex/MEMORY.md'), ('templates/workspace/MEMORY.md', 'memory/shared/MEMORY.md')):
+    if not os.path.exists(dst):
+        shutil.copy(src, dst); made.append(dst)
+if not os.path.exists('local/SCRIPTS.local.md'):
+    open('local/SCRIPTS.local.md', 'w', encoding='utf-8').write('# Local scripts\n\nYour own scripts in local/scripts/ (RULES.md A2). One entry per script: purpose, usage, reads/writes, side effects.\n'); made.append('local/SCRIPTS.local.md')
 print('created: ' + (', '.join(made) if made else 'nothing new'))
 
 if '--demo' in sys.argv:

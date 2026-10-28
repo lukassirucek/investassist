@@ -1,4 +1,14 @@
 # Everything personal is git-ignored. Tracked: code, skills, docs, *.example.yaml, examples/, templates/, prompts/.
+# Local working memory of the toolkit: prompt history, researched knowledge, memory and handovers.
+# Only the README of each folder is tracked. Created by scripts/init_workspace.py.
+/history/*
+!/history/README.md
+/knowledge/*
+!/knowledge/README.md
+/KNOWLEDGE.md
+/memory/*
+!/memory/README.md
+
 # Personal data and exports
 data/
 reports/

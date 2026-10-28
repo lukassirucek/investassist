@@ -9,7 +9,7 @@ open data/reports/<today>/dashboard.html
 ```
 
 ## With your own data
-1. Remove the demo if you loaded it (delete `data/`, `config/*.yaml`, `CLAUDE.local.md`), then `python3 scripts/init_workspace.py`.
+1. Remove the demo if you loaded it (delete `data/`, `config/*.yaml`, `CLAUDE.local.md`, `history/*`, `knowledge/*`, `memory/*` except the READMEs), then `python3 scripts/init_workspace.py`.
 2. Put every export, statement, CSV and screenshot you have into `data/inbox/`. Anything without an export you will type in later.
 3. Start your agent in this folder and say: **"set up"** (Claude Code: just `claude`; it reads `CLAUDE.md`). Other agents: paste `prompts/setup.md`.
 4. The `setup` skill asks a few questions (owner, base currency, country, language), writes a parser for each platform from your own files, reconciles totals, looks up FX and instrument data, connects mail if you have a read-only mail connector, runs the first scan, and schedules daily and weekly runs.

@@ -1,0 +1,21 @@
+{
+  "autoMemoryDirectory": "memory/claude",
+  "permissions": {
+    "deny": ["Read(./.env)", "Read(./.env.*)"]
+  },
+  "hooks": {
+    "UserPromptSubmit": [
+      { "hooks": [ { "type": "command", "command": "python3 \"$CLAUDE_PROJECT_DIR/scripts/prompt-log.py\" hook" } ] }
+    ],
+    "PostToolUse": [
+      { "matcher": "Task|Agent|SendMessage",
+        "hooks": [ { "type": "command", "command": "python3 \"$CLAUDE_PROJECT_DIR/scripts/prompt-log.py\" hook-agent" } ] }
+    ],
+    "SubagentStop": [
+      { "hooks": [ { "type": "command", "command": "python3 \"$CLAUDE_PROJECT_DIR/scripts/prompt-log.py\" hook-agent" } ] }
+    ],
+    "SessionStart": [
+      { "hooks": [ { "type": "command", "command": "python3 \"$CLAUDE_PROJECT_DIR/scripts/memory-handover.py\" status --for claude" } ] }
+    ]
+  }
+}
