@@ -44,7 +44,7 @@ Entry: **Purpose** · **Usage** · **Reads/writes** · **Side effects**
 
 ## Working memory and process (RULES.md B, C, D, E)
 ### `prompt-log.py`
-**Purpose:** prompt history (RULES.md section C): `history/prompts-<who>-YYYYMMWW.md`, summaries, recall, agent exchanges. **Usage:** `python3 scripts/prompt-log.py <add|summarize|exchange|show|path|hook|hook-agent|backfill-model> [options]`.
+**Purpose:** prompt history (RULES.md section C): `history/prompts-<who>-YYYYMMWW.md`, summaries, recall, agent exchanges. **Usage:** `python3 scripts/prompt-log.py <add|summarize [--prompt TEXT: creates the entry when no hook ran]|exchange|show|path|hook|hook-agent|backfill-model> [options]`.
 - `add --who WHO --prompt TEXT|- [--from NAME] [--summary TEXT] [--time "YYYY-MM-DD HH:MM"] [--model ID]` (`WHO` = `user` or an agent name; summary defaults to `_pending_`).
 - `summarize --who WHO --summary TEXT [--date D] [--model ID]` fills the last `_pending_` summary and corrects its `**Model:**` line.
 - `show [--who WHO|all] [--date D] [--since D] [--until D] [--full]`; `path [--who] [--date]`; `backfill-model`.

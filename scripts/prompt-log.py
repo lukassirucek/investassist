@@ -5,7 +5,8 @@ Files: history/prompts-<who>-YYYYMMWW.md  (YYYYMM = year+month of the week's Mon
 
 Subcommands:
   add        --who WHO --prompt TEXT|-  [--from NAME] [--summary TEXT] [--time "YYYY-MM-DD HH:MM"] [--model ID]
-  summarize  --who WHO --summary TEXT   [--date YYYY-MM-DD] [--model ID]   fill the last '_pending_' summary
+  summarize  --who WHO --summary TEXT   [--prompt TEXT] [--date YYYY-MM-DD] [--model ID]   fill the last '_pending_' summary;
+             with --prompt it first adds the entry when no hook logged this prompt (use this on every surface)
              (and correct its **Model:** line)
   show       [--date D | --since D] [--until D] [--who WHO|all]  print entries (prompt shortened)
   path       [--who WHO] [--date D]                              print the history file path
@@ -50,7 +51,7 @@ SECRET = re.compile(r"(sk-[A-Za-z0-9_\-]{16,}|AIza[0-9A-Za-z_\-]{30,}|gh[pousr]_
 ENTRY = re.compile(r"(?m)^### (\d{4}-\d{2}-\d{2}) (\d{2}:\d{2}) ([+-]\d{2}:\d{2})$")
 REMINDER = ("RULES.md applies: check SCRIPTS.md before writing any script; check KNOWLEDGE.md before researching reference facts "
             "(platform formats, instrument identity, rules) and persist new findings in knowledge/; when the turn ends run: "
-            "python3 scripts/prompt-log.py summarize --who user --summary '<max 2 lines>' --model '<your exact model id>' "
+            "python3 scripts/prompt-log.py summarize --who user --prompt '<the user prompt>' --summary '<max 2 lines>' --model '<your exact model id>' "
             "(every history entry must name the LLM and version, RULES C9)")
 UNKNOWN_MODEL = "unknown"
 NOT_RECORDED = "not recorded"
@@ -176,15 +177,23 @@ def add(who, prompt, frm=None, summary=None, when=None, response=None, to=None, 
     open(path, "a", encoding="utf-8").write(entry)
     return path
 
-def summarize(who, summary, date=None, model=None):
+def summarize(who, summary, date=None, model=None, prompt=None):
     d = dt.datetime.strptime(date, "%Y-%m-%d").astimezone() if date else dt.datetime.now().astimezone()
     path, _, _ = hist_path(who, d)
+    if prompt is not None:
+        # Surface-independent close: if no hook logged THIS prompt (Claude desktop/cloud, Codex, ChatGPT), add the entry now.
+        red = SECRET.sub("[REDACTED]", prompt.rstrip("\n"))
+        text = open(path, encoding="utf-8").read() if os.path.exists(path) else ""
+        i = text.rfind("**Summary:** _pending_")
+        if i < 0 or red not in text[text.rfind("**Prompt:**", 0, i):i]:
+            print(add(who, prompt, summary=summary, model=model))
+            return
     if not os.path.exists(path):
         sys.exit("no history file: %s" % path)
     text = open(path, encoding="utf-8").read()
     i = text.rfind("**Summary:** _pending_")
     if i < 0:
-        sys.exit("no pending summary in %s" % os.path.basename(path))
+        sys.exit("no pending summary in %s (pass --prompt \"<the user's prompt>\" to create the entry)" % os.path.basename(path))
     summary = " ".join(summary.split())
     if _model_str(model):
         j = text.rfind("**Model:** ", 0, i)
@@ -321,7 +330,7 @@ def main():
     sub = ap.add_subparsers(dest="cmd", required=True)
     a = sub.add_parser("add"); a.add_argument("--who", default="user"); a.add_argument("--prompt", required=True, help="text or - for stdin")
     a.add_argument("--from", dest="frm"); a.add_argument("--summary"); a.add_argument("--time"); a.add_argument("--model")
-    s = sub.add_parser("summarize"); s.add_argument("--who", default="user"); s.add_argument("--summary", required=True); s.add_argument("--date"); s.add_argument("--model")
+    s = sub.add_parser("summarize"); s.add_argument("--who", default="user"); s.add_argument("--summary", required=True); s.add_argument("--date"); s.add_argument("--model"); s.add_argument("--prompt", help="verbatim user prompt: creates the entry if no hook logged it")
     x = sub.add_parser("exchange"); x.add_argument("--to", required=True); x.add_argument("--from", dest="frm", required=True)
     x.add_argument("--prompt", required=True, help="text or @file"); x.add_argument("--response", help="text or @file"); x.add_argument("--time")
     x.add_argument("--model", help="model that produced the response"); x.add_argument("--from-model", dest="from_model", help="sender's model")
@@ -335,7 +344,7 @@ def main():
         text = sys.stdin.read() if args.prompt == "-" else args.prompt
         print(add(args.who, text, args.frm, args.summary, args.time, model=args.model))
     elif args.cmd == "summarize":
-        summarize(args.who, args.summary, args.date, args.model)
+        summarize(args.who, args.summary, args.date, args.model, args.prompt)
     elif args.cmd == "show":
         show(args.who, args.date, args.since, args.until, args.full)
     elif args.cmd == "exchange":

@@ -12,7 +12,8 @@ This repository is an investment-portfolio assistant. The full rules are in `CLA
 - **Dashboard:** `python3 -I scripts/build_dashboard_html.py` writes `data/reports/<date>/dashboard.html`; open it in a browser. (Claude's Artifact publishing is optional.)
 
 ## Process mechanisms (RULES.md)
-- **Prompt history:** you have no hooks. Log each user prompt: `python3 scripts/prompt-log.py add --who user --prompt - --model "<your model id>"` (prompt on stdin), and at the end of the turn `python3 scripts/prompt-log.py summarize --who user --summary "<max 2 lines>" --model "<your model id>"`.
+- **Prompt history:** you have no hooks. At the end of every turn run `python3 -I scripts/prompt-log.py summarize --who user --prompt "<user prompt verbatim>" --summary "<max 2 lines>" --model "<your model id>"` (creates the entry when none exists). Non-negotiable, same as `RULES.md` section 0.
+- **Sources:** every web source you open is saved with `scripts/knowledge-add.py` before you reply (RULES B6).
 - **Scripts:** read `SCRIPTS.md` before writing any script; register new ones.
 - **Knowledge:** `python3 scripts/knowledge-find.py <terms>` before researching a reference fact; persist with `scripts/knowledge-add.py`.
 - **Memory:** write to `memory/codex/` (index `MEMORY.md`); hand over with `scripts/memory-handover.py write --from codex --to claude ...`.

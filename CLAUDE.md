@@ -7,6 +7,13 @@ Investment-portfolio assistant. It ingests the owner's statements, exports, scre
 @memory/HANDOVER.md
 @memory/shared/MEMORY.md
 
+## Non-negotiable on every surface (Claude Code, Claude desktop/cloud, Codex)
+Hooks run only in local Claude Code. In any other session you must do these yourself (details: `RULES.md` section 0):
+- end of EVERY turn: `python3 -I scripts/prompt-log.py summarize --who user --prompt "<user prompt verbatim>" --summary "<max 2 lines>" --model "<exact model id>"` (creates the entry if no hook did)
+- every web source opened for an answer -> `scripts/knowledge-add.py` before replying; before researching -> `scripts/knowledge-find.py`
+- before writing any script -> `SCRIPTS.md`; after touching scripts/knowledge/history/memory -> `scripts/check-rules.sh`
+- Work in the project folder (on the bridge via `device_bash`). If it is unreachable, say so; never claim something was logged that was not.
+
 ## First thing
 If `config/profile.yaml` or `data/index/` is missing, or the user says "set up" / "get started": run the `setup` skill. Nothing else works before it. `python3 scripts/init_workspace.py --demo` loads synthetic data to try the tool.
 
