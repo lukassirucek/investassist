@@ -1,0 +1,2 @@
+Weekly Investassist run. First do everything in prompts/daily.md, then follow the `portfolio-report` skill (.claude/skills/portfolio-report/SKILL.md): write data/reports/<date>/portfolio_report.md and run the weekly watch skills (housing-watch, alt-invest-watch, commodities-watch, geopolitics-sanctions, natural-hazards, seasonality) for the positions that exist in the exposure map. Close signals that have resolved. Score the outlook track record (`outlook.py due` / `score`).
+Reply with the five most important findings and the report path. No trade orders.

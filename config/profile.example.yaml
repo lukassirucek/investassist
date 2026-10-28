@@ -1,0 +1,7 @@
+# Copy to config/profile.yaml (scripts/init_workspace.py does it) and edit. The real file is git-ignored.
+owner: "Me"            # whose portfolio is "own". Rows with another owner (e.g. a child's account) are reported separately.
+base_ccy: "USD"        # currency of all totals; FX file converts every other currency into it
+timezone: "UTC"        # IANA name, used for schedules and quiet hours
+language: "English"    # language of reports and alerts
+country: ""            # home country: drives local-market watch items (housing, central bank, tax wrappers)
+demo: false            # true = pages show a DEMO DATA banner (set by init_workspace.py --demo)

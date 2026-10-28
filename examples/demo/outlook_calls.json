@@ -1,0 +1,20 @@
+[
+ {"instrument": "iShares Physical Gold ETC", "summary": "Demo: record highs and central-bank buying outweigh a firmer dollar.", "horizon_days": 28,
+  "drivers": [
+   {"text": "Demo: gold at a record high on safe-haven demand", "direction": "pos", "weight": 2, "kind": "news", "source_url": "https://example.com/demo/gold", "source_date": "-1d"},
+   {"text": "Demo: central banks keep buying", "direction": "pos", "weight": 2, "kind": "analyst", "source_url": "https://demo.example.org/central-banks", "source_date": "-4d"},
+   {"text": "Demo: firmer dollar", "direction": "neg", "weight": 1, "kind": "macro", "source_url": "https://example.net/demo/usd", "source_date": "-2d"}],
+  "catalysts": [{"date": "+7d", "event": "Demo central bank decision"}], "risks": ["Demo: positioning is crowded"]},
+ {"instrument": "NVIDIA", "summary": "Demo: tighter export rules and a rate-sensitive sector point down.", "horizon_days": 28,
+  "drivers": [
+   {"text": "Demo: export rules on advanced chips tighten", "direction": "neg", "weight": 3, "kind": "news", "source_url": "https://example.com/demo/chips", "source_date": "-2d"},
+   {"text": "Demo: analysts trim targets", "direction": "neg", "weight": 1, "kind": "analyst", "source_url": "https://demo.example.org/targets", "source_date": "-3d"},
+   {"text": "Demo: data-centre demand stays strong", "direction": "pos", "weight": 1, "kind": "company", "source_url": "https://example.net/demo/dc", "source_date": "-5d"}],
+  "catalysts": [{"date": "+12d", "event": "Demo earnings"}], "risks": ["Demo: concentration in one customer segment"]},
+ {"instrument": "Bitcoin", "summary": "Demo: mixed flows, no clear edge.", "horizon_days": 28,
+  "drivers": [
+   {"text": "Demo: ETF inflows slow", "direction": "neg", "weight": 1, "kind": "news", "source_url": "https://example.com/demo/btc", "source_date": "-2d"},
+   {"text": "Demo: miners report lower sell pressure", "direction": "pos", "weight": 1, "kind": "company", "source_url": "https://demo.example.org/miners", "source_date": "-6d"}],
+  "catalysts": [], "risks": ["Demo: macro shocks"]},
+ {"instrument": "Apple", "summary": "Demo: no fresh news; neutral with low evidence.", "horizon_days": 28, "drivers": [], "catalysts": [], "risks": []}
+]

@@ -1,0 +1,5 @@
+# Where the dashboard is published (optional; Claude Code artifacts). Copy to config/artifacts.yaml; the daily run republishes to the same URL.
+dashboard:
+  url: ""
+  file: data/reports/<date>/dashboard.artifact.html
+  built_by: scripts/build_dashboard_html.py

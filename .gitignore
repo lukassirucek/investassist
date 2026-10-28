@@ -1,0 +1,39 @@
+# Everything personal is git-ignored. Tracked: code, skills, docs, *.example.yaml, examples/, templates/, prompts/.
+# Personal data and exports
+data/
+reports/
+local/
+inbox/
+CLAUDE.local.md
+AGENTS.local.md
+
+# Personal configuration (copies of config/*.example.yaml made by scripts/init_workspace.py)
+config/*.yaml
+!config/*.example.yaml
+
+# Personal skills / agents / scripts the user adds on top (name them local-*)
+.claude/skills/local-*/
+.claude/agents/local-*.md
+.claude/settings.local.json
+
+# Statements and exports, wherever they end up
+*.pdf
+*.xlsx
+*.xls
+*.csv
+!examples/**/*.csv
+*.eml
+*.png
+*.jpg
+*.jpeg
+*.heic
+.env
+.env.*
+
+# Tooling noise
+__pycache__/
+*.pyc
+.DS_Store
+*.bak
+_stage/
+_to_delete/

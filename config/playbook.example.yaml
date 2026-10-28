@@ -1,0 +1,23 @@
+# Action-candidate rules and limits used by scripts/signals.py and scripts/build_dashboard_html.py. Copy to config/playbook.yaml and tune.
+# Output is a CANDIDATE for the owner's review, never an order. Not financial advice.
+thresholds:
+  alert_severity: 4            # signal severity 1-5 at/above -> ALERT
+  alert_impact_pct: 0.30       # estimated portfolio impact (mid) at/above this % of own total -> ALERT
+  large_exposure_pct: 5.0
+  medium_exposure_pct: 1.0
+rules:
+  - {id: R1, when: {direction: neg, min_severity: 4, min_exposure_pct: 5.0}, action: "REVIEW SIZE: large exposure under a high-severity negative signal. Options: trim toward a target weight, hedge, set a max-loss line, or accept knowingly."}
+  - {id: R2, when: {direction: neg, min_severity: 3, min_exposure_pct: 1.0}, action: "WATCH CLOSELY: medium exposure, negative signal. Define the trigger that would make you reduce (price level, second confirming event, date)."}
+  - {id: R3, when: {direction: neg, min_severity: 4, min_exposure_pct: 0.0}, action: "NOTE: severe negative event, small exposure. Check for other holdings sharing the same driver (see tags)."}
+  - {id: R4, when: {direction: pos, min_severity: 3, max_exposure_pct: 0.5}, action: "OPPORTUNITY TO STUDY: positive driver with small exposure. Options: add within your position-size limits, or ignore. Check valuation and overlap first."}
+  - {id: R5, when: {direction: pos, min_severity: 3, min_exposure_pct: 5.0}, action: "REBALANCE CHECK: positive driver on an already large exposure; consider whether gains push you past your target weight."}
+  - {id: R6, when: {direction: mixed, min_severity: 3, min_exposure_pct: 1.0}, action: "WATCH: mixed signal on medium/large exposure; wait for the next data point."}
+limits:                         # tested on investments (cash excluded) in the weekly report
+  max_single_platform_pct: 25
+  max_single_instrument_pct: 15
+  max_speculative_pct: 5
+  monthly_outflow: 0            # fixed monthly outflow in base currency (for a cash-runway line); 0 = skip
+outlook:
+  top_n: 15                     # largest non-cash holdings (aggregated across platforms) scanned every run
+  horizon_days: 28
+  lean_threshold: 3             # |sum of signed driver weights| needed for an up/down lean; otherwise neutral

@@ -1,0 +1,4 @@
+pyyaml
+openpyxl
+# optional, only for scripts/check_dashboard_html.py:
+# playwright

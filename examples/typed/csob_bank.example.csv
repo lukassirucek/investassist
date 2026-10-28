@@ -1,0 +1,3 @@
+platform,account,portfolio_type,asset_class,instrument_id,symbol,name,country,units,price,cost,value,ccy,valuation_date,owner,status,confidence,notes,interest_rate_pct,pnl,maturity_date,risk_rating
+csob_bank,Current account (...1234),,cash,CZK,CZK,Cash CZK,CZ,,,,100000,CZK,2026-01-15,,held,high,"balance from a balance notification e-mail; only the last 4 digits of the account; a negative value is an overdraft",,,,
+csob_bank,Savings (...5678),,cash,CZK,CZK,Cash CZK,CZ,,,,250000,CZK,2026-01-15,,held,high,"",,,,

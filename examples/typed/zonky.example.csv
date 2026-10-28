@@ -1,0 +1,2 @@
+platform,account,portfolio_type,asset_class,instrument_id,symbol,name,country,units,price,cost,value,ccy,valuation_date,owner,status,confidence,notes,interest_rate_pct,pnl,maturity_date,risk_rating
+zonky,Zonky Rentiér,,p2p_loan,ZONKY_RENTIER,,Zonky Rentiér automated loan portfolio,CZ,,,,45000,CZK,2026-01-15,,held,medium,"typed from the app: portfolio value and the yield % p.a. it shows",4.8,,,

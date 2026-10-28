@@ -1,0 +1,22 @@
+ids,name,class,sector,industry,sub_industry,hq,revenue_regions,raw_materials,themes
+IE00B4L5Y983|IWDA LN|iShares Core MSCI World UCITS ETF,iShares Core MSCI World UCITS,equity_etf,Diversified,ETF,MSCI World,,Developed markets,diversified,global equities
+IE00BK5BQT80|VWCE GY|Vanguard FTSE All-World UCITS ETF,Vanguard FTSE All-World UCITS,equity_etf,Diversified,ETF,FTSE All-World,,Global,diversified,global equities
+IE00B5BMR087|CSPX LN|iShares Core S&P 500 UCITS ETF,iShares Core S&P 500 UCITS,equity_etf,Diversified,ETF,S&P 500,,US,diversified,US equities
+IE00B3VVMM84|VFEM LN|Vanguard FTSE Emerging Markets UCITS ETF,Vanguard FTSE Emerging Markets UCITS,equity_etf,Diversified,ETF,Emerging markets,,EM,diversified,emerging markets
+IE00B4ND3602|SGLN LN|iShares Physical Gold ETC,iShares Physical Gold ETC,gold,Commodity,Gold,Gold ETC,,Global,gold,gold;safe haven
+IE00B3F81K65|IGLO LN|iShares Global Govt Bond UCITS ETF,iShares Global Govt Bond UCITS,bond_etf,Fixed Income,ETF,Global govt bonds,,Global,,rates
+IE00B3F81R35|CORP LN|iShares Global Corp Bond UCITS ETF,iShares Global Corp Bond UCITS,bond_etf,Fixed Income,ETF,Global corporate bonds,,Global,,credit
+US0378331005|AAPL|Apple,Apple,equity_single,Information Technology,Tech Hardware,"iPhone, services",US,US;China;EU,aluminium;rare earths;lithium;cobalt;silicon,consumer;China supply chain
+US5949181045|MSFT|Microsoft,Microsoft,equity_single,Information Technology,Software,"Cloud, productivity",US,US;EU,silicon;copper,AI;cloud
+US67066G1040|NVDA|NVIDIA,NVIDIA,equity_single,Information Technology,Semiconductors,AI GPUs,US,US;Taiwan;China,silicon wafers;gallium;copper;rare gases,AI;semis
+US0231351067|AMZN|Amazon,Amazon,equity_single,Consumer Discretionary,Internet retail,"E-commerce, cloud",US,US;EU,paper;fuel,AI;cloud;consumer
+NL0010273215|ASML|ASML Holding,ASML Holding,equity_single,Information Technology,Semiconductor equipment,Lithography,NL,Asia;US;EU,rare earths;helium;neon,AI;semis
+US30231G1022|XOM|Exxon Mobil,Exxon Mobil,equity_single,Energy,Oil & Gas,Integrated oil,US,Global,crude oil;natural gas,energy
+BTC|Bitcoin,Bitcoin,crypto,Crypto,Crypto,Store of value,,,bitcoin,bitcoin;crypto
+ETH|Ethereum,Ethereum,crypto,Crypto,Crypto,Layer-1 chain,,,crypto,crypto
+XAU|Gold (physical),Gold (physical),gold,Commodity,Gold,Physical gold,,Global,gold,gold;safe haven
+platform:demo_lender:p2p_loan,Peer-to-peer loan book (example),loan,Credit,Consumer credit,P2P consumer loans,,Home market,,consumer credit
+cash,Cash,cash,Cash,Cash,Cash,,,,
+cash:usd|USD,Cash USD,cash,Cash,Cash,Cash,,,,
+cash:eur|EUR,Cash EUR,cash,Cash,Cash,Cash,,,,
+cash:gbp|GBP,Cash GBP,cash,Cash,Cash,Cash,,,,

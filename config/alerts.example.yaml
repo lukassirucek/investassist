@@ -1,0 +1,23 @@
+# Alert routing. Copy to config/alerts.yaml. Real file is git-ignored.
+channels:
+  file:   {enabled: true, dir: reports/alerts}
+  email:  {enabled: false, mode: draft, to: ""}     # draft = create a draft only; send = send automatically
+  slack:  {enabled: false, target: ""}
+  push:   {enabled: false}
+severity_routing:
+  critical: [push, slack, email, file]
+  high:     [slack, email, file]
+  medium:   [email, file]
+  low:      [file]
+scoring:
+  critical_if_any:
+    - "position >= 5% of portfolio AND credible event with >= 8% expected price impact within 30d"
+    - "loan/crowdfunding/P2P: default, missed payment > 30d, or platform insolvency/licence action"
+    - "sanctions/embargo directly covering an owned company's revenue region >= 20% of revenue"
+    - "broker/platform outage, freeze or withdrawal block"
+  high_if_any:
+    - "position >= 2% AND price move >= 5% in 1d without own-company news"
+    - "key input commodity moves >= 10% in 5d for an owned company with >= 20% cost share"
+    - "loan/crowdfunding project delay, covenant change, or interest-rate reset"
+dedupe: {same_event_window_hours: 48}
+quiet_hours: {start: "22:00", end: "07:00", override: [critical]}   # timezone from config/profile.yaml

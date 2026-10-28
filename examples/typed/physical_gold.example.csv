@@ -1,0 +1,2 @@
+platform,account,portfolio_type,asset_class,instrument_id,symbol,name,country,units,price,cost,value,ccy,valuation_date,owner,status,confidence,notes,interest_rate_pct,pnl,maturity_date,risk_rating
+physical_gold,Home,,gold,XAU,XAU,Gold bar 1 oz (physical),,31.1035,3000,,,CZK,2026-01-15,,held,medium,"units in GRAMS; price = CZK per gram from a dated source (cite it); 1 troy oz = 31.1035 g; cost left blank unless you know it",,,,

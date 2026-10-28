@@ -1,0 +1,19 @@
+# Registry of the user's data sources. Copy to config/sources.yaml. The ingest-router skill reads it to recognise files and mail,
+# `build-parser` adds an entry whenever it writes a new parser. Real file is git-ignored.
+# Built-in parsers (tracked, in parsers/): revolut, portu, indigo, raiffeisen, investown, golden_gate - see parsers/README.md. Register the ones you use like this:
+#   revolut: {type: broker, formats: [consolidated statement xlsx], parser: "parsers/revolut_index.py <xlsx> --out data/index --screens <csv> --screens-date <d>", report_ccy: GBP, confirmed: true}
+sources:
+  # example_broker:
+  #   type: broker                       # broker | bank | crypto | p2p | crowdlending | robo_advisor | fund_platform | manual | physical
+  #   formats: [pdf statement, csv]      # what the user exports
+  #   detect: {filename: "statement_*.pdf", text_contains: "Example Broker"}   # hints used by ingest-router
+  #   parser: local/parsers/example_broker_index.py                           # written by build-parser; usage: <input> <out_dir>
+  #   report_ccy: EUR
+  #   confirmed: false                   # true after the user confirmed the column mapping on a first sample
+  #   note: ""
+mail:                                    # used by ingest-email; leave empty to skip mail
+  connector: gmail                       # gmail | none  (any mail tool the agent has; read-only)
+  routes: []
+  # - {source: example_broker, query: "to:invest@example.com", kinds: [trade, dividend, statement, balance]}
+drive:                                   # optional: a shared folder where exports land
+  folder_url: ""

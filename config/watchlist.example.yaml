@@ -1,0 +1,6 @@
+# Items to watch that are NOT owned (macro, commodities, regions). Copy to config/watchlist.yaml. Owned items are generated into watchlist.generated.yaml.
+commodities: [gold, silver, copper, oil_brent, natural_gas, wheat, uranium]
+macro: [central_bank_rates, inflation, us_10y_yield, home_currency_vs_usd]
+housing: []          # e.g. [local_house_prices, mortgage_rates] if you own property-linked assets
+geopolitics: []
+climate: [ENSO_el_nino_la_nina]

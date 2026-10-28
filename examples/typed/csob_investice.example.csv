@@ -1,0 +1,2 @@
+platform,account,portfolio_type,asset_class,instrument_id,symbol,name,country,units,price,cost,value,ccy,valuation_date,owner,status,confidence,notes,interest_rate_pct,pnl,maturity_date,risk_rating
+csob_investice,Výchozí portfolio,regular,fund,,,ČSOB example mutual fund,CZ,3500,1.24,4200,4340,CZK,2026-01-15,,held,medium,"from app screens: 'Celkem investováno' = cost; app may show a fund's units rounded (units from the purchase record); an entry fee may be excluded from the app's cost basis",,,,

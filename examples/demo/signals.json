@@ -1,0 +1,14 @@
+[
+ {"event_date": "+2d", "category": "macro", "headline": "Demo: central bank signals a slower pace of rate cuts", "source_url": "https://example.com/demo/rates", "source_date": "-1d",
+  "severity": 3, "direction": "neg", "horizon_days": 21, "tags": ["theme:rates", "class:bond_etf", "class:p2p_loan"], "basis": "INFERENCE",
+  "summary": "Synthetic demo signal. Slower cuts keep yields higher for longer.", "impact_low_pct": -2, "impact_high_pct": -0.5, "confidence": "low"},
+ {"event_date": "-1d", "category": "commodity", "headline": "Demo: gold at a record on safe-haven demand", "source_url": "https://example.com/demo/gold", "source_date": "-1d",
+  "severity": 3, "direction": "pos", "horizon_days": 28, "tags": ["theme:gold", "class:gold"], "basis": "FACT",
+  "summary": "Synthetic demo signal.", "impact_low_pct": 1, "impact_high_pct": 5, "confidence": "medium"},
+ {"event_date": "+5d", "category": "geopolitics", "headline": "Demo: export rules on advanced chips tighten", "source_url": "https://example.com/demo/chips", "source_date": "-2d",
+  "severity": 4, "direction": "neg", "horizon_days": 30, "tags": ["theme:semis", "name:nvidia"], "basis": "INFERENCE",
+  "summary": "Synthetic demo signal. Shows an ALERT (severity 4) on semiconductor exposure.", "impact_low_pct": -8, "impact_high_pct": -2, "confidence": "low"},
+ {"event_date": "+9d", "category": "platform", "headline": "Demo: P2P lender reports more late payments", "source_url": "https://example.com/demo/p2p", "source_date": "-3d",
+  "severity": 3, "direction": "neg", "horizon_days": 60, "tags": ["class:loan"], "basis": "FACT",
+  "summary": "Synthetic demo signal.", "impact_low_pct": -4, "impact_high_pct": -1, "confidence": "low"}
+]

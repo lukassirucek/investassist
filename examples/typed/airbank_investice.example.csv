@@ -1,0 +1,3 @@
+platform,account,portfolio_type,asset_class,instrument_id,symbol,name,country,units,price,cost,value,ccy,valuation_date,owner,status,confidence,notes,interest_rate_pct,pnl,maturity_date,risk_rating
+airbank,Investice do akcií,regular,stock,,,Example Corp,,,,,7000,CZK,2026-01-15,,held,medium,"phone photo of the app list (Air Bank has no export): value and gain/loss only; units/prices not visible; cost derived",,-200,,
+airbank,Investice do akcií,regular,etf,,,Example World ETF,,,,,5000,CZK,2026-01-15,,held,medium,"values in CZK; instrument currency unknown",,350,,

@@ -1,0 +1,15 @@
+platform,account,portfolio_type,asset_class,instrument_id,symbol,name,country,units,price,cost,value,ccy,valuation_date,owner,status,confidence,notes,interest_rate_pct
+demo_broker,Demo brokerage (1234),,etf,IE00B4L5Y983,IWDA,iShares Core MSCI World UCITS,IE,400,95.20,32000,,EUR,today,,held,medium,synthetic demo data,
+demo_broker,Demo brokerage (1234),,etf,IE00BK5BQT80,VWCE,Vanguard FTSE All-World UCITS,IE,150,121.40,16500,,EUR,today,,held,medium,synthetic demo data,
+demo_broker,Demo brokerage (1234),,stock,US0378331005,AAPL,Apple,US,40,192.00,6100,,USD,today,,held,medium,synthetic demo data,
+demo_broker,Demo brokerage (1234),,stock,US5949181045,MSFT,Microsoft,US,25,410.00,7800,,USD,today,,held,medium,synthetic demo data,
+demo_broker,Demo brokerage (1234),,stock,US67066G1040,NVDA,NVIDIA,US,60,118.00,4200,,USD,today,,held,medium,synthetic demo data,
+demo_broker,Demo brokerage (1234),,stock,NL0010273215,ASML,ASML Holding,NL,6,880.00,4900,,EUR,today,,held,medium,synthetic demo data,
+demo_broker,Demo brokerage (1234),,gold,IE00B4ND3602,SGLN,iShares Physical Gold ETC,IE,180,56.00,8200,,GBP,today,,held,medium,synthetic demo data,
+demo_broker,,,total,,,,,,,,,EUR,today,,,,total shown by the platform (synthetic),
+demo_crypto,Demo exchange,,crypto,BTC,BTC,Bitcoin,,0.12,68000,5200,,USD,today,,held,medium,synthetic demo data,
+demo_crypto,Demo exchange,,crypto,ETH,ETH,Ethereum,,1.5,2600,3100,,USD,today,,held,medium,synthetic demo data,
+demo_bank,Demo bank current account (9876),,cash,EUR,,Cash EUR,,,,,22500,EUR,today,,held,high,synthetic demo data,
+demo_bank,Demo bank savings (5432),,cash,USD,,Cash USD,,,,,3000,USD,today,,held,high,synthetic demo data,
+demo_lender,Demo P2P lender,,p2p_loan,DEMO_LOANBOOK,,Peer-to-peer loan book (example),,,,8000,8450,EUR,today,,held,medium,synthetic demo data; yield as shown by the platform,8.5
+demo_broker_kid,Demo child account (4455),,etf,IE00BK5BQT80,VWCE,Vanguard FTSE All-World UCITS,IE,20,121.40,2200,,EUR,today,Demo Child,held,medium,second owner: reported separately and excluded from own totals,

@@ -1,0 +1,1 @@
+Run the `setup` skill (.claude/skills/setup/SKILL.md) for this repository and finish it end to end: workspace, profile, inventory of my exports, a parser or typed index for every platform, reference data and FX, mail routes, alerts, first pipeline run, and scheduled daily and weekly monitoring. Ask me only what you cannot read from my files. Never invent numbers.
