@@ -1,0 +1,5 @@
+platform,account,portfolio_type,asset_class,instrument_id,symbol,name,country,units,price,cost,value,ccy,valuation_date,owner,status,confidence,notes,interest_rate_pct,pnl,maturity_date,risk_rating
+raiffeisen_bank,Current account (...1234),,cash,CZK,CZK,Cash CZK,CZ,,,,100000,CZK,2026-01-15,,held,medium,"Raiffeisenbank mobile app screenshot (account list); only the last 4 digits; screenshot = point-in-time",,,,
+raiffeisen_bank,Savings (...5678),,cash,CZK,CZK,Cash CZK,CZ,,,,250000,CZK,2026-01-15,,held,medium,"savings account screen; interest rate shown in the app if visible",1.5,,,
+raiffeisen_bank,Business account (...9012),,cash,CZK,CZK,Cash CZK (business),CZ,,,,80000,CZK,2026-01-15,Business,held,medium,"business funds: owner is not the profile owner, so it is excluded from own totals",,,,
+raiffeisen_bank,Credit card (...3456),,loan_liability,CZK,CZK,Credit card used amount,CZ,,,,-20000,CZK,2026-01-15,,held,medium,"the app shows AVAILABLE (e.g. 30000 of a 50000 limit): used = limit - available, entered as a negative value",,,,

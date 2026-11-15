@@ -18,12 +18,13 @@ if [[ -f KNOWLEDGE.md ]]; then
 fi
 grep -q '^@RULES.md' CLAUDE.md || bad "CLAUDE.md does not import RULES.md"
 grep -q 'RULES.md' AGENTS.md || bad "AGENTS.md does not point to RULES.md"
-for k in prompt-log.py hook-agent SubagentStop UserPromptSubmit memory-handover.py autoMemoryDirectory; do grep -q "$k" .claude/settings.json || bad ".claude/settings.json missing $k"; done
+for k in webfetch-save.py prompt-log.py hook-agent SubagentStop UserPromptSubmit memory-handover.py autoMemoryDirectory; do grep -q "$k" .claude/settings.json || bad ".claude/settings.json missing $k"; done
 grep -q '^- C8 ' RULES.md || bad "RULES.md missing rule C8 (log all agent communications)"
 grep -q '^## 0\. Every surface' RULES.md || bad "RULES.md missing section 0 (every surface, non-negotiable)"
 grep -q '^- B6 ' RULES.md || bad "RULES.md missing rule B6 (save every opened source)"
 grep -q 'Non-negotiable on every surface' CLAUDE.md || bad "CLAUDE.md missing the every-surface block"
 grep -q 'summarize --who user --prompt' CLAUDE.md || bad "CLAUDE.md close-the-turn command lacks --prompt"
+grep -q '^- B7 ' RULES.md || bad "RULES.md missing rule B7 (store the full fetched text)"
 grep -q '^- C9 ' RULES.md || bad "RULES.md missing rule C9 (model on every history entry)"
 for f in .gitignore; do for k in '/history/*' '/knowledge/*' '/memory/*' '/KNOWLEDGE.md'; do grep -qxF "$k" $f || bad ".gitignore missing $k"; done; done
 if [[ -d memory/claude ]]; then

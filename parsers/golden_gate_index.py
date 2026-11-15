@@ -10,7 +10,10 @@ Input rows (row_type `state`; columns row_type,account,item,value,unit,note):
   gold_account / remaining_to_complete_brick_<ccy> price of that remainder at the platform's gold price (e.g. remaining_to_complete_brick_czk)
   gold_account / cash_paid_toward_current_brick_<ccy>   optional: cash paid so far (from payment e-mails) = cost
   btc_account  / units                              BTC shown by the platform
-  btc_account  / invested                           total invested in the platform's currency (no market value is shown: leave BTC value blank, the exposure map needs a BTC price)
+  btc_account  / invested                           total invested in the platform's currency
+  btc_account  / price_<ccy>                        optional: the app's current price per BTC ("Aktuální cena", e.g. price_czk). With it BTC gets value = units x price; without it the value stays blank.
+  Use `units` = the account balance ("Celkem naspořeno"); the "Souhrn investic" line can show a gross figure (invested / average price) that is slightly higher.
+Rows with row_type other than `state` (e.g. `meta` with asof/source) are ignored. Screenshots of the iPhone app (Komoditní účet, Bitcoinový účet) carry all these figures; see docs/platform-notes.md.
 """
 import argparse, csv, datetime as dt, os, re
 
@@ -39,9 +42,10 @@ def main():
     has_btc = ('btc_account', 'units') in S
     if has_btc:
         u, inv = S[('btc_account', 'units')], S.get(('btc_account', 'invested'))
+        px = S.get(('btc_account', f'price_{ccy.lower()}'))
         rows.append(dict(base, account='Golden Gate - bitcoin account', asset_class='crypto', instrument_id='BTC', symbol='BTC', name='Bitcoin', native_ccy=ccy, units_net=f'{u:.8f}', units_bought=f'{u:.8f}',
-                         cost=f'{inv:.2f}' if inv else '', price=f'{inv / u:.2f}' if inv and u else '', valuation_date='', confidence='medium', value='',
-                         notes='cost = total invested as stated (fees unknown); price column = AVERAGE purchase price (derived); the platform shows no market value (needs a BTC price)'))
+                         cost=f'{inv:.2f}' if inv else '', price=(f'{px:.2f}' if px else (f'{inv / u:.2f}' if inv and u else '')), valuation_date=(a.asof if px else ''), confidence='medium', value=(f'{u * px:.2f}' if px else ''),
+                         notes=('cost = total invested (fees unknown); price = the app current price per BTC; value = units x price' if px else 'cost = total invested as stated (fees unknown); price column = AVERAGE purchase price (derived); the platform shows no market value (needs a BTC price)')))
     os.makedirs(a.out, exist_ok=True)
     with open(os.path.join(a.out, 'golden_gate.positions.csv'), 'w', newline='', encoding='utf-8') as f:
         w = csv.DictWriter(f, fieldnames=COLS, extrasaction='ignore'); w.writeheader(); w.writerows(rows)
@@ -68,7 +72,7 @@ Delivered bricks are your own holding, tracked separately as platform `physical_
 Platform price implied by the remainder: **{price_g:,.2f} {ccy}/g** ({price_g * OZ:,.0f} {ccy}/oz).
 """
     if has_btc:
-        md += f"\n## Bitcoin\n| Units | Invested {ccy} | Avg purchase price | Market value |\n|---:|---:|---:|---|\n| {u:.8f} BTC | {(inv or 0):,.0f} | {(inv / u if inv and u else 0):,.0f} | not provided |\n"
+        md += f"\n## Bitcoin\n| Units | Invested {ccy} | Avg purchase price | Market value |\n|---:|---:|---:|---|\n| {u:.8f} BTC | {(inv or 0):,.0f} | {(inv / u if inv and u else 0):,.0f} | {(f'{u * px:,.0f} {ccy} at {px:,.0f}/BTC (app current price)' if px else 'not provided')} |\n"
     md += """
 ## Caveats
 - Gold cost = cash paid toward the current brick (from payment e-mails); bonus grams bought with credits carry no cash cost. Accumulated grams are derived, so a small gap to the e-mails is normal.

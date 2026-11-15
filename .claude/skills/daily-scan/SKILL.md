@@ -12,3 +12,7 @@ Pipeline (all paths relative to the project root; run scripts with `python3 -I`)
 6. **Digest + dashboard**: `python3 -I scripts/signals.py digest <date>` then `python3 -I scripts/build_dashboard_html.py <date>`. Publish `data/reports/<date>/dashboard.artifact.html` with the Artifact tool to the URL in `config/artifacts.yaml` (first time: publish, then store the URL there) (same file path or `url` = that URL, so the link never changes). If no artifact tool is available, leave the HTML file (`dashboard.html`) in `data/reports/<date>/` and give its path; never create a second artifact for the same dashboard.
 7. **Route**: `alert-triage` for ALERT items and `urgent` mail. Reply with <= 10 lines: alerts, urgent mail, outlook leans that are not neutral, the next dated catalysts within 7 days, stale-data warnings, the dashboard link or path.
 Rules: no trade orders - action candidates are options for review; show base-currency exposure and % of own portfolio; other owners' accounts are excluded from own totals; never invent numbers; cite URL + date for every claim; leans are tilts, not forecasts.
+
+Last step: skill `publish-to-drive` (RULES F) so the digest, summaries and dashboard are in Drive.
+
+Then skill `send-status-email` (RULES G).

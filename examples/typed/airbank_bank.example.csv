@@ -1,0 +1,5 @@
+platform,account,portfolio_type,asset_class,instrument_id,symbol,name,country,units,price,cost,value,ccy,valuation_date,owner,status,confidence,notes,interest_rate_pct,pnl,maturity_date,risk_rating
+airbank_bank,Current account (main),,cash,CZK,CZK,Cash CZK,CZ,,,,25000,CZK,2026-01-15,,held,medium,"Air Bank app 'Chytrý přehled' > Běžné účty; account names are the owner's own labels, never account numbers",,,,
+airbank_bank,Current account EUR,,cash,EUR,EUR,Cash EUR,CZ,,,,500,EUR,2026-01-15,,held,medium,"foreign-currency account: value in its own currency (ccy column); the master index converts with data/fx/fx_latest.csv",,,,
+airbank_bank,Loan account,,cash,CZK,CZK,Cash CZK,CZ,,,,3000,CZK,2026-01-15,,held,medium,"the app also shows a balance 'včetně kontokorentu' (balance + overdraft limit): record the BALANCE only, an unused overdraft is not cash",,,,
+airbank_bank,Savings USD,,cash,USD,USD,Cash USD,CZ,,,,200,USD,2026-01-15,,held,medium,"Spoření block; the app's 'Na spořicích účtech máte k dispozici' line is a CZK total at the bank rate: use it to reconcile (FX differs a little)",,,,

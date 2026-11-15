@@ -1,9 +1,21 @@
 #!/usr/bin/env python3
-"""Revolut "Consolidated statement" (xlsx, Investment Services Summaries) -> data/index/revolut.positions.csv + revolut.index.md
+"""Revolut "Consolidated statement" (xlsx or csv) -> data/index/revolut.positions.csv + revolut.index.md
 
-Usage: python3 -I parsers/revolut_index.py <statement.xlsx> [--out data/index] [--report-ccy GBP] [--portfolio-type regular]
+Usage: python3 -I parsers/revolut_index.py <statement.xlsx|statement.csv> [--out data/index] [--report-ccy GBP] [--portfolio-type regular]
          [--screens app_screenshots.csv --screens-date YYYY-MM-DD [--app-total N]] [--aliases aliases.json] [--source-url URL]
-Needs: pip install openpyxl.  Contract of the output: docs/index-spec.md.
+         [--pockets] [--allow-partial]
+Needs: pip install openpyxl (only for .xlsx; .csv needs nothing).  Contract of the output: docs/index-spec.md.
+
+Two layouts are read (both are Revolut app > Documents > Consolidated statement):
+  * xlsx, product "Investment services" only: starts with "Investment Services Summaries" (stocks, crypto).
+  * csv "v2", all products: starts with "Current Accounts Summaries" (one block per currency pocket, with opening/closing balance), then the same investment and crypto
+    sections, then "Current Accounts Transaction Statements" (top-ups, card payments, transfers to crypto). Dates are "Mon D, YYYY"; crypto dates DD.MM.YY.
+  The file name carries the period: consolidated-statement-v2_<from>_<to>_en_<hash>.<ext>.
+PERIOD MATTERS: positions are rebuilt from every purchase in the file. A statement that starts after the brokerage account was opened (Revolut Trading opening date is in the
+file) is PARTIAL: units, cost and realised P&L are incomplete. A partial statement never overwrites revolut.positions.csv: it writes revolut.partial.csv + revolut.partial.index.md
+(dividends, crypto acquisitions, pockets, top-ups context) unless --allow-partial is given. For positions export "since opening" (or from 2022-01-01) every time.
+--pockets adds one cash row per non-zero current-account pocket (csv v2 only; closing balance, native amount in units_net, value in report currency). Custom pocket names are
+never stored (privacy). These are current-account balances, separate from the brokerage cash row that comes from the app screenshots (`CASH_<ccy>`).
 
 The statement holds every trade since opening: units bought/sold, amounts invested, realised P&L, dividends, crypto buys and staking. It has NO market values
 for stocks. Market value, price and cash come from an optional transcription of the app's list screens (`--screens`, columns:
@@ -21,10 +33,7 @@ Unexplained differences are never fixed silently; they are listed under "App scr
 """
 import argparse, csv, datetime as dt, json, math, os, re, sys
 
-try:
-    import openpyxl
-except ImportError:
-    sys.exit('openpyxl is required: pip install openpyxl')
+CSV_DATE = re.compile(r'^[A-Z][a-z]{2} \d{1,2}, \d{4}$')
 
 COLS = ['platform', 'account', 'portfolio_type', 'asset_class', 'instrument_id', 'symbol', 'name', 'country', 'status', 'native_ccy', 'units_net', 'units_bought', 'units_sold',
         'n_buys', 'first_buy', 'last_buy', 'report_ccy', 'cost', 'fees', 'realized_pnl', 'dividends_gross', 'dividends_tax', 'dividends_net', 'n_dividends', 'last_dividend',
@@ -60,6 +69,34 @@ def money(v):
 
 def d(v):
     return v.date() if isinstance(v, dt.datetime) else v
+
+
+def csv_cell(c):
+    """csv text -> the types openpyxl gives for the same cell: datetime for "Mon D, YYYY", float for plain numbers, else the string."""
+    if CSV_DATE.match(c):
+        return dt.datetime.strptime(c, '%b %d, %Y')
+    if re.fullmatch(r'-?\d+(\.\d+)?', c):
+        return float(c)
+    return c
+
+
+def load_rows(path):
+    """-> [(row_no, [non-empty cells])] for xlsx and csv alike (empty cells are dropped, as before)."""
+    if path.lower().endswith('.csv'):
+        with open(path, encoding='utf-8-sig', newline='') as f:
+            return [(i, [csv_cell(fix(c.strip())) for c in r if c.strip() != '']) for i, r in enumerate(csv.reader(f), 1)]
+    try:
+        import openpyxl
+    except ImportError:
+        sys.exit('openpyxl is required for .xlsx: pip install openpyxl (or export the statement as .csv)')
+    ws = openpyxl.load_workbook(path, data_only=True).active
+    return [(i, [fix(c) for c in r if c is not None]) for i, r in enumerate(ws.iter_rows(values_only=True), 1)]
+
+
+def pocket_ccy(s, fallback):
+    s = fix(s) if isinstance(s, str) else ''
+    m = re.search(r'\b([A-Z]{3})$', s.strip())
+    return m.group(1) if m else (next((SYM[c] for c in SYM if c in s), None) or ('INR' if '₹' in s else fallback))
 
 
 def apply_screens(rows, scr_path, scr_date, app_total, rc, A, checks):
@@ -129,13 +166,13 @@ def main():
     ap.add_argument('--portfolio-type', default='regular'); ap.add_argument('--source-url', default='')
     ap.add_argument('--screens'); ap.add_argument('--screens-date', default=dt.date.today().isoformat()); ap.add_argument('--app-total', type=float)
     ap.add_argument('--aliases'); ap.add_argument('--owner', default='')
+    ap.add_argument('--pockets', action='store_true'); ap.add_argument('--allow-partial', action='store_true')
     a = ap.parse_args()
     A = json.load(open(a.aliases, encoding='utf-8')) if a.aliases else {}
     ALIAS = {k: tuple(v) for k, v in A.get('isin_alias', {}).items()}
     path, out = a.statement, a.out
 
-    ws = openpyxl.load_workbook(path, data_only=True).active
-    rows = [(i, [fix(c) for c in r if c is not None]) for i, r in enumerate(ws.iter_rows(values_only=True), 1)]
+    rows = load_rows(path)
 
     def find(txt, start=0):
         try:
@@ -145,13 +182,18 @@ def main():
     r_div, r_sold, r_oth, r_cry = (find('Transaction statement (only dividend'), find('Units which have been sold'),
                                    find('Other brokerage account transactions'), find('Crypto Transaction Statements'))
     r_eoy = find('End of Year holding statement')
-    acct = next(r for i, r in rows if r and r[0] == 'Account Number')[1]
-    acct_mask = '…' + str(int(float(acct)))[-4:]
+    r_inv = next((i for i, r in rows if r and isinstance(r[0], str) and r[0].startswith('Investment Services Summaries')), 0)   # csv v2 has current-account blocks before it
+    acct_row = next(r for i, r in rows if i > r_inv and r and r[0] == 'Account Number')
+    acct_mask = '…' + str(int(float(acct_row[1])))[-4:]
+    opening = d(acct_row[3]) if len(acct_row) > 3 and isinstance(acct_row[3], dt.datetime) else None      # brokerage account opening date
     period = re.search(r'(\d{4}-\d{2}-\d{2})_(\d{4}-\d{2}-\d{2})', os.path.basename(path))
-    rc = (a.report_ccy or next((money(c)[1] for i, r in rows[:25] for c in r if isinstance(c, str) and money(c)[1]), None) or 'GBP').upper()
+    partial = bool(period and opening and dt.date.fromisoformat(period.group(1)) > opening + dt.timedelta(days=1))
+    base = 'revolut.partial' if partial and not a.allow_partial else 'revolut'
+    kind = 'csv' if path.lower().endswith('.csv') else 'xlsx'
+    rc = (a.report_ccy or next((money(c)[1] for i, r in rows if r_inv <= i < r_inv + 25 for c in r if isinstance(c, str) and money(c)[1]), None) or 'GBP').upper()
     summ = {}
     labels = ('Dividends', 'Tax withheld on dividend', 'Net dividend income', 'Gross proceeds', 'Cost basis', 'Fees and other charges', 'Net PnL')
-    for i, r in rows[:20]:
+    for i, r in [x for x in rows if r_inv <= x[0] < r_inv + 20]:
         for k in range(0, len(r) - 1, 2):
             if r[k] in labels:
                 summ[r[k]] = money(r[k + 1])[0]
@@ -264,8 +306,30 @@ def main():
                              value=f"{e.get('value', 0):.2f}" if e else '', price=f"{e.get('price', 0):.2f}" if e else '', price_ccy=rc if e else '', valuation_date=val_date, confidence='high',
                              notes='dividends_net column = staking income at receipt' if c['units_stake'] else '', owner=own))
     scr_info = apply_screens(out_rows, a.screens, a.screens_date, a.app_total, rc, A, checks) if a.screens else None
+    pockets, r_ca = [], next((i for i, r in rows if r and isinstance(r[0], str) and r[0].startswith('Current Accounts Summaries')), None)
+    if r_ca is not None:                                               # csv v2: one block per currency pocket, "Closing balance" = native amount, then the report-currency value
+        title, n_title = None, {}
+        for i, r in rows:
+            if i <= r_ca or (r_inv and i >= r_inv):
+                continue
+            if len(r) == 1 and isinstance(r[0], str) and re.match(r'^.+ \(([A-Z]{3})\)$', r[0]):
+                title = r[0]
+            elif title and r and r[0] == 'Closing balance' and len(r) >= 2:
+                ccy = re.search(r'\(([A-Z]{3})\)$', title).group(1)
+                nat = money(r[1])[0]
+                val = money(r[2])[0] if len(r) > 2 else nat
+                label = 'Personal Account' if title.startswith('Personal Account') else 'Named pocket'          # custom names are not stored
+                n_title[(label, ccy)] = n_title.get((label, ccy), 0) + 1
+                pockets.append(dict(label=f"{label} ({ccy})" + (f" #{n_title[(label, ccy)]}" if n_title[(label, ccy)] > 1 else ''), ccy=pocket_ccy(r[1], ccy), native=nat, value=val))
+                title = None
+    if a.pockets and pockets:
+        for k in pockets:
+            if k['native']:
+                out_rows.append(dict(platform='revolut', account='current accounts (Revolut Bank UK)', portfolio_type='', asset_class='cash', instrument_id=k['ccy'], symbol=k['ccy'],
+                                     name=f"Cash {k['label']}", status='held', native_ccy=k['ccy'], units_net=f"{k['native']:.2f}", report_ccy=rc, value=f"{k['value']:.2f}", valuation_date=val_date,
+                                     confidence='high', notes='current-account pocket, closing balance of the statement period; separate from the brokerage cash row', owner=own))
     os.makedirs(out, exist_ok=True)
-    with open(os.path.join(out, 'revolut.positions.csv'), 'w', newline='', encoding='utf-8') as f:
+    with open(os.path.join(out, base + ('.positions.csv' if base == 'revolut' else '.csv')), 'w', newline='', encoding='utf-8') as f:
         w = csv.DictWriter(f, fieldnames=COLS, extrasaction='ignore'); w.writeheader(); w.writerows(out_rows)
 
     stocks = [r for r in out_rows if r['asset_class'] in ('stock', 'etf')]
@@ -277,18 +341,18 @@ def main():
     crypto_val = sum(float(r['value'] or 0) for r in crypto_rows)
     md = [f"""---
 platform: revolut
-source_type: Revolut consolidated statement (xlsx)
+source_type: Revolut consolidated statement ({kind}{', PARTIAL period' if partial else ''})
 source_file: {os.path.basename(path)}
 source_url: {a.source_url}
 statement_period: {period.group(1) + ' to ' + period.group(2) if period else ''}
 valuation_date: {a.screens_date if a.screens else val_date}
 generated: {dt.date.today().isoformat()}
 report_ccy: {rc}
-positions_csv: revolut.positions.csv
+positions_csv: {base + ('.positions.csv' if base == 'revolut' else '.csv')}
 ---
-# Revolut index
+# Revolut index{' (PARTIAL period: not part of the master index)' if base != 'revolut' else ''}
 
-Every instrument traded on Revolut (stocks/ETFs + crypto) since account opening: units, amount invested, realised P&L, dividend income. Amounts in **{rc}** (statement currency).
+Every instrument traded on Revolut (stocks/ETFs + crypto) {'in the statement period ' + period.group(1) + ' to ' + period.group(2) + ' ONLY (account opened ' + str(opening) + '): units, cost and realised P&L are INCOMPLETE; dividends, crypto acquisitions and pockets are valid.' if partial else 'since account opening: units, amount invested, realised P&L, dividend income.'} Amounts in **{rc}** (statement currency).
 
 ## Totals ({rc})
 | | |
@@ -309,6 +373,8 @@ Every instrument traded on Revolut (stocks/ETFs + crypto) since account opening:
     for r in held:
         md.append(f"| {r['symbol'] or '-'} | {r['name'] or '-'} | {r['instrument_id']} | {r['units_net'] or '?'} | {(r['price'] + ' ' + r['price_ccy']) if r.get('price') else '-'} | {r.get('value') or '-'} | {r['cost']} | {r['dividends_net']} | {r['status']} |\n")
     md.append("\n## Crypto\n| Symbol | Units | Cost | Value |\n|---|---:|---:|---:|\n" + ''.join(f"| {r['symbol']} | {r['units_net']} | {r['cost']} | {r['value'] or '-'} |\n" for r in crypto_rows))
+    if pockets:
+        md.append("\n## Current-account pockets (closing balance)\n| Pocket | Native | Value " + rc + " |\n|---|---:|---:|\n" + ''.join(f"| {k['label']} | {k['native']:,.2f} {k['ccy']} | {k['value']:,.2f} |\n" for k in pockets) + f"\nIn the index: {'yes (--pockets)' if a.pockets else 'no (add --pockets)'}\n")
     md.append("\n## Sold out / converted\n" + (', '.join(f"{r['symbol'] or r['name']} ({r['status']}, P&L {r['realized_pnl']})" for r in gone) or 'none') + "\n")
     if scr_info:
         md.append("\n## App screenshot cross-check\n" + (''.join(f"- {m}\n" for m in scr_info['mismatches']) or "- all held positions match (units equal to statement, truncated to 2dp)\n"))
@@ -319,14 +385,15 @@ Every instrument traded on Revolut (stocks/ETFs + crypto) since account opening:
 - Units are as of transaction date. Splits, mergers and spin-offs after purchase are not in the statement; unexplained unit differences are listed above. Use `--aliases` for confirmed corporate actions.
 - Names appear in the statement only for sold and dividend rows; enrichment (sector, region) is done by `build-exposure-map` via ISIN.
 - Native currency of numeric-only amounts is assumed USD.
-- Rebuild: `python3 -I parsers/revolut_index.py <statement.xlsx> --out data/index [--screens ... --screens-date ...]`
+- Statement file types: xlsx (investment services only) and csv v2 (all products, incl. current-account pockets and transactions). A statement that starts after the brokerage opening date is PARTIAL and is written to revolut.partial.* (never to the master index) unless --allow-partial.
+- Rebuild: `python3 -I parsers/revolut_index.py <statement.xlsx|csv> --out data/index [--screens ... --screens-date ...] [--pockets] [--allow-partial]`
 """)
-    open(os.path.join(out, 'revolut.index.md'), 'w', encoding='utf-8').write(''.join(md))
+    open(os.path.join(out, base + '.index.md'), 'w', encoding='utf-8').write(''.join(md))
     for c in checks:
         print(c)
     if scr_info:
         print('screens:', scr_info['mismatches'])
-    print(f'OK revolut: {len(stocks)} stock rows; {len(held)} held; {len(crypto_rows)} crypto')
+    print(f"{'PARTIAL period statement -> ' + base + '.* (master index untouched; use --allow-partial to overwrite)' if base != 'revolut' else 'OK revolut'}: {len(stocks)} stock rows; {len(held)} held; {len(crypto_rows)} crypto; {len(pockets)} pockets")
 
 
 if __name__ == '__main__':

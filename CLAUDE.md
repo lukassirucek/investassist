@@ -10,7 +10,7 @@ Investment-portfolio assistant. It ingests the owner's statements, exports, scre
 ## Non-negotiable on every surface (Claude Code, Claude desktop/cloud, Codex)
 Hooks run only in local Claude Code. In any other session you must do these yourself (details: `RULES.md` section 0):
 - end of EVERY turn: `python3 -I scripts/prompt-log.py summarize --who user --prompt "<user prompt verbatim>" --summary "<max 2 lines>" --model "<exact model id>"` (creates the entry if no hook did)
-- every web source opened for an answer -> `scripts/knowledge-add.py` before replying; before researching -> `scripts/knowledge-find.py`
+- every web source opened for an answer -> `scripts/knowledge-add.py` before replying, with the FULL fetched text verbatim, not a note (RULES B7); before researching -> `scripts/knowledge-find.py`
 - before writing any script -> `SCRIPTS.md`; after touching scripts/knowledge/history/memory -> `scripts/check-rules.sh`
 - Work in the project folder (on the bridge via `device_bash`). If it is unreachable, say so; never claim something was logged that was not.
 
@@ -45,3 +45,6 @@ If `config/profile.yaml` or `data/index/` is missing, or the user says "set up" 
 - Scripts run as `python3 -I`, from the project root. Money columns end in `_base` (profile `base_ccy`); native currency is shown beside each position.
 - Skills tell the agent what to do and when; scripts do arithmetic. Compute with code, never in prose.
 - A platform without a ready-made parser = a new parser in `local/parsers/` + a row in `config/sources.yaml`, via `build-parser`. Do not edit tracked scripts for one user's platform.
+
+- Drive publish (RULES F): after every index/master/summary/dashboard rebuild run skill `publish-to-drive` (bundle `scripts/drive_publish_bundle.py`, Drive folder `Published`, Docs + Sheet + text companion for Gemini).
+- Status e-mail (RULES G): at the end of every work block that changed data/indexes/totals/rules, run skill `send-status-email` (subject `[Investassist] Status - YYYYMMDD`; only if `status_email.py check` passes; the setup skill asks twice before enabling).

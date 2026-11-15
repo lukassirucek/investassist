@@ -6,3 +6,7 @@ description: Weekly (or on-demand) portfolio report - distribution by platform/c
 2. Read `data/exposure/exposure_map.md`, `holdings_enriched.csv`, `data/signals/signals.csv`, `config/playbook.yaml` and the previous `data/reports/*/portfolio_report.md`.
 3. Write `data/reports/<date>/portfolio_report.md`: where the money is (platform, class, currency); distribution (sector, region, raw material, theme); concentrations vs playbook limits (status ok / at / over); the week's signals (new, resolved, catalysts in the next 14 days with exposure in base currency); change vs the previous report; review candidates (trim/simplify) and gaps (add) as options; open data items; index staleness per platform.
 4. Rules: own portfolio only (other owners excluded); base currency with native currency per position; label FACT / INFERENCE / HISTORICAL PATTERN; never invent numbers; suggestions are options for review, never orders; end with "Not financial advice".
+
+Last step: skill `publish-to-drive` (RULES F) with the report.
+
+Then skill `send-status-email` (RULES G).

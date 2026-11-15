@@ -21,3 +21,12 @@ scoring:
     - "loan/crowdfunding project delay, covenant change, or interest-rate reset"
 dedupe: {same_event_window_hours: 48}
 quiet_hours: {start: "22:00", end: "07:00", override: [critical]}   # timezone from config/profile.yaml
+
+# Status e-mail (RULES.md G). OFF by default. The setup skill asks for the address, then asks again to confirm it (the mail contains sensitive totals),
+# and only then runs `python3 -I scripts/status_email.py enable --to ADDR --confirmed`.
+status_email:
+  enabled: false
+  to: ""
+  confirmed: false
+  confirmed_at: ""
+  subject: "[Investassist] Status - {YYYYMMDD}"   # YYYYMMDD = today's ISO date without dashes, e.g. 20261115

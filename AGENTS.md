@@ -13,7 +13,7 @@ This repository is an investment-portfolio assistant. The full rules are in `CLA
 
 ## Process mechanisms (RULES.md)
 - **Prompt history:** you have no hooks. At the end of every turn run `python3 -I scripts/prompt-log.py summarize --who user --prompt "<user prompt verbatim>" --summary "<max 2 lines>" --model "<your model id>"` (creates the entry when none exists). Non-negotiable, same as `RULES.md` section 0.
-- **Sources:** every web source you open is saved with `scripts/knowledge-add.py` before you reply (RULES B6).
+- **Sources:** every web source you open is saved with `scripts/knowledge-add.py` before you reply, with the full fetched text verbatim, not a note (RULES B6, B7).
 - **Scripts:** read `SCRIPTS.md` before writing any script; register new ones.
 - **Knowledge:** `python3 scripts/knowledge-find.py <terms>` before researching a reference fact; persist with `scripts/knowledge-add.py`.
 - **Memory:** write to `memory/codex/` (index `MEMORY.md`); hand over with `scripts/memory-handover.py write --from codex --to claude ...`.
@@ -23,3 +23,6 @@ This repository is an investment-portfolio assistant. The full rules are in `CLA
 `python3 scripts/init_workspace.py --demo` to see it work on synthetic data, or follow `prompts/setup.md` for your own data. Personal files are git-ignored: never commit `data/`, `reports/`, `local/`, `config/*.yaml`, `CLAUDE.local.md`, `history/`, `knowledge/`, `memory/`.
 
 Put personal rules for your own session in `AGENTS.local.md` (git-ignored).
+
+- Drive publish (RULES F): after every index/master/summary/dashboard rebuild run skill `publish-to-drive` (bundle `scripts/drive_publish_bundle.py`, Drive folder `Published`, Docs + Sheet + text companion for Gemini).
+- Status e-mail (RULES G): at the end of every work block that changed data/indexes/totals/rules, run skill `send-status-email` (subject `[Investassist] Status - YYYYMMDD`; only if `status_email.py check` passes; the setup skill asks twice before enabling).

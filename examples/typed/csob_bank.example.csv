@@ -1,3 +1,5 @@
 platform,account,portfolio_type,asset_class,instrument_id,symbol,name,country,units,price,cost,value,ccy,valuation_date,owner,status,confidence,notes,interest_rate_pct,pnl,maturity_date,risk_rating
 csob_bank,Current account (...1234),,cash,CZK,CZK,Cash CZK,CZ,,,,100000,CZK,2026-01-15,,held,high,"balance from a balance notification e-mail; only the last 4 digits of the account; a negative value is an overdraft",,,,
 csob_bank,Savings (...5678),,cash,CZK,CZK,Cash CZK,CZ,,,,250000,CZK,2026-01-15,,held,high,"",,,,
+csob_bank,Credit card (...3456),,loan_liability,CZK,CZK,Credit card used amount,CZ,,,,-20000,CZK,2026-01-15,,held,medium,"ČSOB Smart app screenshot shows AVAILABLE (limit 50000, available 30000): used = limit - available, negative value",,,,
+csob_bank,Business account (...9012),,cash,CZK,CZK,Cash CZK (business),CZ,,,,80000,CZK,2026-01-15,Business,held,medium,"business funds: owner is not the profile owner, excluded from own totals",,,,

@@ -2,11 +2,16 @@
 name: ingest-router
 description: Entry point for importing any statement, export, screenshot or e-mail into the portfolio. Use when files appear in data/inbox/ or the user says "ingest", "import", "update portfolio".
 ---
-1. Optional drop zone: if `config/sources.yaml` has `drive.folder_url` and a Drive connector exists, list the folder, download files not yet in `data/raw/` (match by name + size/modified) into `data/inbox/`. Leave originals untouched.
+1. Optional drop zone: if `config/sources.yaml` has `drive.folder_url` and a Drive connector exists, list the folder (one sub-folder per platform; page through results with `pageToken`), SKIP `processed-*` sub-folders, download files not yet in `data/raw/` (match by name + size/modified) into `data/inbox/`. Screenshot as-of date = timestamp in the file name or the app, not the drop date. After a successful run, move the processed Drive files into `processed-YYYYMMDD` inside the same platform folder (create it; never delete). Leave originals untouched.
 2. List `data/inbox/`. For each file detect the platform (filename, header row, logo/text, sender) using `config/sources.yaml`.
 3. Archive the original to `data/raw/<platform>/<YYYY-MM>/` (move, never delete).
 4. Dispatch: registered parser in `sources.yaml` -> run it; platform in `parsers/README.md` -> that parser; typed template in `examples/typed/` -> `manual_index.py`; CSV/XLSX/text-PDF with no parser -> `build-parser`; image -> `ingest-screenshot`; typed list or platform without export -> `ingest-manual`; crypto -> `ingest-crypto`; mail -> `ingest-email`.
 5. Unknown platform or `confirmed: false` -> show the first 5 rows and the proposed mapping, confirm with the user (AskUserQuestion) before writing anything.
 6. New parser or typed route for a platform: register it (`config/sources.yaml`; own scripts in `local/scripts/` + `local/SCRIPTS.local.md`, RULES.md A2).
-7. After all files: reconcile against the platform's own totals, append a line to `data/ledger/ingest_log.md`, print a 5-line summary (files, rows added, duplicates, mismatches, open questions), then `master-index`, then `build-exposure-map` for any new instrument.
+7. After all files: reconcile against the platform's own totals, append a line to `data/portfolio/ingest_log.md` (the router text used to say data/ledger/), print a 5-line summary (files, rows added, duplicates, mismatches, open questions), then `master-index`, then `build-exposure-map` for any new instrument.
+Statement-based platform with only a newer app total (Portu, Indigo) -> `scripts/marks_index.py` (see ingest-screenshot). Run order: platform indexes, marks, `master-index`.
 Always set `portfolio_type` when a platform holds several wrappers (regular / retirement / tax-advantaged); never merge them in tax-relevant output. Contract: `docs/index-spec.md`.
+
+8. Publish: after the master is rebuilt run skill `publish-to-drive` (RULES F), unless the user asked not to.
+
+9. Status e-mail: after publishing run skill `send-status-email` (RULES G; it does nothing unless enabled and confirmed).

@@ -1,0 +1,8 @@
+row_type,account,item,value,unit,note
+meta,,asof,2026-01-15,,date of the screenshots (ignored by the parser; pass --asof)
+state,gold_account,remaining_to_complete_brick_g,10.00,g,Komoditní účet > Rozpořené slitky: "Zbývá k dosporení 10,00 g / 30 000 Kč"
+state,gold_account,remaining_to_complete_brick_czk,30000,CZK,same line
+state,gold_account,cash_paid_toward_current_brick_czk,60000,CZK,optional: from payment e-mails
+state,btc_account,invested,50000,CZK,Bitcoinový účet: "Nainvestováno"
+state,btc_account,units,0.0250,BTC,"Celkem naspořeno" (balance); the Souhrn investic line can show a slightly higher gross figure
+state,btc_account,price_czk,2000000,CZK,"Aktuální cena" per BTC in Souhrn investic (optional: gives BTC a market value)

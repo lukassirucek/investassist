@@ -1,0 +1,3 @@
+platform,owner,app_total,ccy,valuation_date,source,notes
+portu,,250000,CZK,2026-01-15,app screenshot total of the own portfolios,positions come from the monthly statement; this brings the platform total to the app figure
+indigo,,100000,CZK,2026-01-15,Indigo app "Hodnota majetku",app rounds to whole CZK
